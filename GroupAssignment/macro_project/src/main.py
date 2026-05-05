@@ -1,3 +1,3 @@
-hi = "shut blake's big mouth please."
+hi = "stupid"
 
 print(hi)
