@@ -1,1 +1,3 @@
-print("testing")
+hi = "shut up"
+
+print(hi)
