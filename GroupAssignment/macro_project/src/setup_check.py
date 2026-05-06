@@ -85,7 +85,8 @@ def _print_species_list(available: list[str]) -> None:
     print("\nInitial Input\n")
     print("=" * 55)
     for i, name in enumerate(available, 1):  # enumarate(first-instance: iterable data, second-instance: start from)
-        print(f"{i}. {name}")
+        print(f"- {name}")
+    print("=" * 55)
 
 
 def _parse_custom_input(raw: str, available: list[str]) -> list[str] | None:
