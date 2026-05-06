@@ -11,12 +11,9 @@ the program exits gracefully rather than crashing later.
 """
 
 import sys
-from pathlib import Path
+from src.config import AppConfig
 
-from src.config import RAW_DATA_DIR, SUPPORTED_EXTENSIONS
-
-
-# Dataset validation 
+# Dataset validation
 
 def check_dataset_exists() -> bool:
     """Return True if RAW_DATA_DIR exists and contains at least one image.
@@ -25,12 +22,12 @@ def check_dataset_exists() -> bool:
         True  – dataset is present and readable
         False – folder missing or completely empty
     """
-    if not RAW_DATA_DIR.exists(): # checks if the directory exists
+    if not AppConfig.DATASET_DIR.exists():  # checks if the directory exists
         return False
 
     # checks the filetype of the data within the directory
-    for file in RAW_DATA_DIR.rglob("*"):
-        if file.suffix.lower() in SUPPORTED_EXTENSIONS: # suffix.lower() makes the file extensions lowercase (jpeg, png, and etc) to avoid FileNotFoundError
+    for file in AppConfig.DATASET_DIR.rglob("*"):
+        if file.suffix.lower() in AppConfig.SUPPORTED_EXTENSIONS:  # suffix.lower() makes the file extensions lowercase (jpeg, png, and etc) to avoid FileNotFoundError
             return True
 
     return False
@@ -45,13 +42,14 @@ def get_available_species() -> list[str]:
     Returns list[str]
         Sorted class/species names found in the dataset.
     """
-    species = [] # list to store all species
-    for entry in sorted(RAW_DATA_DIR.iterdir()):
+    species = []  # list to store all species
+    for entry in sorted(AppConfig.DATASET_DIR.iterdir()):
         if not entry.is_dir():
             continue
         # checks every file within the folder; if at least one image exists (.png, .jpeg, and etc), mark this folder as "has images"
-        # any() stops as soon as it finds a match  
-        has_images = any(f.suffix.lower() in SUPPORTED_EXTENSIONS for f in entry.iterdir()) # entry.iterdir() looks at everything within the current species folder 
+        # any() stops as soon as it finds a match
+        has_images = any(f.suffix.lower() in AppConfig.SUPPORTED_EXTENSIONS for f in
+                         entry.iterdir())  # entry.iterdir() looks at everything within the current species folder
         if has_images:
             species.append(entry.name)
     return species
@@ -62,18 +60,18 @@ def print_download_instructions() -> None:
     print("\n" + "=" * 55)
     print("  Dataset not found")
     print("=" * 55)
-    print(f"\nThe macroinvertebrate image dataset was not found at:{RAW_DATA_DIR}\n")
+    print(f"\nThe macroinvertebrate image dataset was not found at:{AppConfig.DATASET_DIR}\n")
     print("To download the dataset:")
     print("1. Go to https://www.kaggle.com/datasets/kennethtm/stream-macroinvertebrates")
     print("2. Click 'Download' (you need a free Kaggle account)")
     print("3. Unzip the downloaded file")
-    print(f"4. Move the extracted folders into:{RAW_DATA_DIR}")
+    print(f"4. Move the extracted folders into:{AppConfig.DATASET_DIR}")
     print("\nThe folder structure should look like:")
     print("    data/raw/")
-    print("      Baetidae/")
+    print("      Baetidae sp/")
     print("        image1.jpg")
     print("        image2.jpg")
-    print("      Chironomidae/")
+    print("      Chironomidae sp/")
     print("        ...")
     print("\n  Then re-run the program.")
     print("=" * 55 + "\n")
@@ -86,47 +84,38 @@ def _print_species_list(available: list[str]) -> None:
     print("=" * 55)
     print("\nInitial Input\n")
     print("=" * 55)
-    for i, name in enumerate(available, 1): # enumarate(first-instance: iterable data, second-instance: start from)
+    for i, name in enumerate(available, 1):  # enumarate(first-instance: iterable data, second-instance: start from)
         print(f"{i}. {name}")
 
 
 def _parse_custom_input(raw: str, available: list[str]) -> list[str] | None:
-    """Parse a comma-separated string of species names against the available list."""
-    
-    # builds a dictionary like {"baetidae": "Baetidae"} so we can match regardless of capitalisation
-    lookup = {name.lower(): name for name in available}
-    
-    # splits the user's input by commas and strips whitespace from each piece e.g. "Baetidae, chironomidae" → ["Baetidae", "chironomidae"]
-    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    """Parse a space-separated string of numbers against the available species list."""
+
+    parts = [p.strip().rstrip(",") for p in raw.split() if p.strip()]  # splits by spaces, strips any commas e.g. "1,3,5" → ["1", "3", "5"]
 
     if not parts:  # user just hit enter without typing anything
         print("\nNo species entered. Please try again.")
         return None
 
-    selected = []      # species we successfully matched
-    unrecognised = []  # species we couldn't find in the dataset
+    if not all(p.isdigit() for p in parts):  # makes sure everything entered is actually a number
+        print("\nPlease enter numbers only. Try again.")
+        return None
 
-    for part in parts:
-        if part.lower() in lookup:              # check against lowercase version of the name
-            canonical = lookup[part.lower()]    # get the properly-cased name back e.g. "Baetidae"
-            if canonical not in selected:       # avoid adding duplicates if user typed same one twice
-                selected.append(canonical)
-        else:
-            unrecognised.append(part)  # couldn't find it, flag it for the error message
+    indices = [int(p) for p in parts]  # convert strings to integers
 
-    if unrecognised:  # if anything didn't match, show the user what went wrong
-        print(f"\nThese species were not recognised:")
-        for name in unrecognised:
-            print(f"X {name}")
-        print("\nCheck the spelling against the list above and try again.")
-        return None  # return None so the calling function knows to ask again
+    if any(i < 1 or i > len(available) for i in indices):  # check numbers are within valid range
+        print(f"\nNumbers must be between 1 and {len(available)}. Try again.")
+        return None
 
-    return selected  # all names were valid, return the cleaned list
+    if len(set(indices)) != len(indices):  # set() removes duplicates — if lengths differ, there were duplicates
+        print("\nDuplicate numbers detected. Each species can only be chosen once.")
+        return None
 
+    return [available[i - 1] for i in indices]  # convert numbers back to species names (minus 1 because list index starts at 0)
 
 def prompt_species_selection(available: list[str]) -> list[str]:
     """Main species selection menu — keeps looping until user confirms a valid choice."""
-    
+
     print("=" * 55)
     print("\nSetup Check\n")
     print("=" * 55)
@@ -142,13 +131,13 @@ def prompt_species_selection(available: list[str]) -> list[str]:
         if choice == "1":
             selected = available[:]  # [:] makes a copy of the list so we don't accidentally modify the original
             if _confirm_selection(selected):
-                return selected      # confirmed — we're done, send the selection back
+                return selected  # confirmed — we're done, send the selection back
             # if they hit retry, the while True loop runs again and shows the menu again
 
         elif choice == "2":
             while True:  # inner loop just for the custom input — stays here until valid + confirmed or retried
-                print("\n  Type the species you want, separated by commas.")
-                print("  Example:  Baetidae, Chironomidae, Perlidae\n")
+                print("\n  Type the numbers of the species you want, separated by spaces or commas.")
+                print("  Example:  1, 3, 5  or  1 3 5\n")
                 raw = input("  Your selection: ").strip()
 
                 selected = _parse_custom_input(raw, available)
@@ -170,18 +159,18 @@ def prompt_species_selection(available: list[str]) -> list[str]:
 
 def _confirm_selection(selected: list[str]) -> bool:
     """Shows the user what they picked and asks them to confirm or go back."""
-    
+
     print(f"\n  You selected {len(selected)} species:\n")
     for name in selected:
         print(f"      • {name}")
 
     print("\n  1.  Confirm and continue")
     print("  2.  Retry")
-    
+
     while True:  # keeps asking until they enter 1 or 2
         answer = input("\n  [Enter a number]: ").strip()
         if answer == "1":
-            return True   # confirmed
+            return True  # confirmed
         if answer == "2":
             return False  # go back
         print("  Please enter 1 or 2.")
@@ -189,7 +178,7 @@ def _confirm_selection(selected: list[str]) -> bool:
 
 def run_setup() -> dict:
     """Runs at startup — checks the dataset exists, then handles species selection."""
-    
+
     print("\n  Macroinvertebrate Image Analysis System")
     print("  Startup check…")
 
@@ -200,8 +189,8 @@ def run_setup() -> dict:
     available = get_available_species()  # get the list of class folder names
 
     if not available:  # folder exists but no valid sub-folders with images inside
-        print(f"\nERROR: Dataset folder found at {RAW_DATA_DIR} but no class sub-folders with images were detected.\n"
-               "Check that images are inside named sub-folders (one per species).\n")
+        print(f"\nERROR: Dataset folder found at {AppConfig.DATASET_DIR} but no class sub-folders with images were detected.\n"
+              "Check that images are inside named sub-folders (one per species).\n")
         sys.exit(1)
 
     print(f"Dataset found ({len(available)} species available)")
@@ -213,6 +202,7 @@ def run_setup() -> dict:
     print("=" * 55)
 
     return {
-        "selected_species": selected,   # what the user chose
-        "all_species": available,       # the full list, kept for reference
+        "selected_species": selected,  # what the user chose
+        "all_species": available,  # the full list, kept for reference
     }
+
