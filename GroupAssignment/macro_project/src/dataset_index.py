@@ -20,16 +20,25 @@ class DatasetIndexer:
         """Return one row per image with file path, label, and dimensions."""
         record_folder = {}
         for file_path in self.data_dir.rglob("*"):
+            # Skip non-image files
             if file_path.suffix.lower() not in AppConfig.SUPPORTED_EXTENSIONS:
                 continue
 
+            # Load image
             image = cv2.imread(str(file_path))
+
+            # Skip unreadable images
             if image is None:
                 continue
+
+            # Species label = parent folder name
+            species = file_path.parent.name
+
+            # Image metadata
             height, width = image.shape[:2]
             channels = image.shape[2] if len(image.shape) == 3 else 1
             label = file_path.stem
-            species = file_path.parent.name
+
             if self.species_filter is not None and species not in self.species_filter:
                 continue
             if species not in record_folder:
