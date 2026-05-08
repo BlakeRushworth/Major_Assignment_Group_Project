@@ -5,5 +5,5 @@ from src.dataset_index import DatasetIndexer
 
 class WorkflowService:
     def run_full_pipeline(self, selection):
-        data = DatasetIndexer('macro_project\data\raw')
+        data = DatasetIndexer(Path("data/raw"))
         data.build_dataframe()
