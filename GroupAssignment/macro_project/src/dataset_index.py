@@ -18,7 +18,7 @@ class DatasetIndexer:
     
     def build_dataframe(self) -> pd.DataFrame:
         """Return one row per image with file path, label, and dimensions."""
-        records = []
+        record_folder = {}
         for file_path in self.data_dir.rglob("*"):
             if file_path.suffix.lower() not in AppConfig.SUPPORTED_EXTENSIONS:
                 continue
@@ -28,18 +28,29 @@ class DatasetIndexer:
                 continue
             height, width = image.shape[:2]
             channels = image.shape[2] if len(image.shape) == 3 else 1
-            label = file_path.parent.name
-            if self.species_filter is not None and label not in self.species_filter:
+            label = file_path.stem
+            species = file_path.parent.name
+            if self.species_filter is not None and species not in self.species_filter:
                 continue
+            if species not in record_folder:
+                record_folder[species] = []
 
-            records.append(
+            record_folder[species].append(
                 {
-                "file_path": str(file_path),
                 "label": label,
+                "species": species,
                 "width": width,
                 "height": height,
                 "channels": channels,
+                "file_path": str(file_path)
+
                 }
             )
-        print(records)
-        return pd.DataFrame(records)
+        records = []
+        for folder_name, info_list in record_folder.items(): # nested for loop for a dictionary
+            print(f"\n{folder_name}: {len(info_list)} total images")
+            for info in info_list:
+                print(info)
+            records.extend(info_list) # to collect all data into one flat record for data frame
+        data_frame = pd.DataFrame(records)
+        return data_frame
