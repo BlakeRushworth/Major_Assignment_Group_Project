@@ -5,7 +5,7 @@ from src.dataset_index import DatasetIndexer
 
 class WorkflowService:
     def run_full_pipeline(self, selection):
-        data = DatasetIndexer(selected_species=selection)
+        data = DatasetIndexer(selection["selected_species"])
         data.build_dataframe()
 
         
