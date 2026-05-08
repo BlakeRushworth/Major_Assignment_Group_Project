@@ -33,5 +33,4 @@ class DatasetIndexer:
                 "channels": channels,
                 }
             )
-        print(records)
         return pd.DataFrame(records)
