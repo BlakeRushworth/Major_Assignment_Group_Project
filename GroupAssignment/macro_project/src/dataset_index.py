@@ -12,12 +12,12 @@ from src.config import AppConfig
 class DatasetIndexer:
     """Scan the dataset folder and build a tabular image index."""
 
-    def __init__(
-        self,
-        data_dir: Path = AppConfig.RAW_DATA_DIR,
-        selected_species=None
-    ) -> None:
+    def __init__(self, data_dir: Path = AppConfig.RAW_DATA_DIR, selected_species = None ) -> None:
         self.data_dir = Path(data_dir)
+        if AppConfig.DATASET_DIR.exists():
+            self.data_dir = AppConfig.DATASET_DIR
+        else: 
+            self.data_dir = AppConfig.RAW_DATA_DIR
         if isinstance(selected_species, dict):
             self.selected_species = selected_species.get("selected_species", [])
         else:
