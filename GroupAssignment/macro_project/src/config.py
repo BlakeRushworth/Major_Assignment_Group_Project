@@ -23,3 +23,4 @@ class AppConfig:
                     cls.EDA_OUTPUT_DIR,
                     cls.MODEL_OUTPUT_DIR]:
             path.mkdir(parents = True, exist_ok = True)
+    
