@@ -83,10 +83,10 @@ def _print_species_list(available: list[str]) -> None:
     """Print the numbered species list used in the initial input screen."""
     print("=" * 55)
     print("\nInitial Input\n")
-    print("=" * 55)
+    print("=" * 55 + "\n")
     for i, name in enumerate(available, 1):  # enumarate(first-instance: iterable data, second-instance: start from)
-        print(f"- {name}")
-    print("=" * 55)
+        print(f"{i}. {name}")
+    print("\n"+"=" * 55)
 
 
 def _parse_custom_input(raw: str, available: list[str]) -> list[str] | None:
