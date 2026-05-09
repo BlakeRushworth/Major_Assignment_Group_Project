@@ -14,6 +14,17 @@ class ConsoleApp:
         self.df = self.workflow.initialize_data(self.selection["selected_species"])
         self.main_menu()
 
+    def post_action_navigation(self):
+        print("\n" + "-" * 20)
+        print("1. Back to Menu")
+        print("2. Exit Program")
+
+        choice = input("\n[Select an option]: ")
+
+        if choice == "2":
+            self.print_close_application()
+            sys.exit()
+
     def main_menu(self):
         while True:
             self.print_main_menu()
@@ -32,6 +43,7 @@ class ConsoleApp:
 
     def dataset_summary_menu(self):
         self.workflow.display_summary(self.df)
+        self.post_action_navigation()
 
     def graphs_menu(self):
         while True:
