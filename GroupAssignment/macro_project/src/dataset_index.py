@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import cv2
+import re
 import pandas as pd
 from src.config import AppConfig
 
@@ -55,11 +56,38 @@ class DatasetIndexer:
 
                 }
             )
-        # records = []
-        # # for folder_name, info_list in record_folder.items(): # nested for loop for a dictionary
-        # #     print(f"\n{folder_name}: {len(info_list)} total images")
-        # #     for info in info_list:
-        # #         print(info)
-        # #     records.extend(info_list) # to collect all data into one flat record for data frame
-        # data_frame = pd.DataFrame(records)
-        # return data_frame
+        records = []
+        for folder_name, info_list in record_folder.items(): # loop for a dictionary
+            records.extend(info_list) # to collect all data into one flat record for data frame
+        data_frame = pd.DataFrame(records)
+        return data_frame
+
+    def get_summary(self, df: pd.DataFrame):
+        """Prints a clean summary of the dataset grouping by species."""
+        if df.empty:
+            print("No data available to summarize.")
+            return
+
+        # groupby() is used to find a specific column and perform an action
+        summary = df.groupby('species').agg({
+            'label': 'count',      # Total images
+            # the keyword: 'mean' tells panda to run (sum/count)
+            'width': 'mean',       # Average width
+            'height': 'mean',      # Average height
+            'file_path': 'first'   # Just take the first path as an example
+        }).reset_index()
+
+        print("\n" + "="*50)
+        print("DATASET SUMMARY")
+        print("="*50)
+
+        for _, row in summary.iterrows():
+            # Clean the label (remove numbers if they are like 'oak_01')
+            # This regex keeps only alphabetic characters
+            clean_name = re.sub(r' .*', '', str(row['species']))
+            print(f"\nSpecies: {row['species']}")
+            print(f" - Name:            {clean_name}")
+            print(f" - Total Images:    {row['label']}")
+            print(f" - Avg Dimensions:  {row['width']:.1f}x{row['height']:.1f}")
+            print(f" - Base Filepath:   {Path(row['file_path']).parent}")
+        print("="*50)
