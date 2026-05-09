@@ -6,6 +6,7 @@ from src.dataset_index import DatasetIndexer
 class WorkflowService:
     def run_full_pipeline(self, selection):
         data = DatasetIndexer((selection["selected_species"]))
+        print("\n  loading... \n")
         data.build_dataframe()
 
         

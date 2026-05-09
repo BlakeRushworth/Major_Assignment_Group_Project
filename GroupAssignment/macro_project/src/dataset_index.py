@@ -55,11 +55,11 @@ class DatasetIndexer:
 
                 }
             )
-        records = []
-        for folder_name, info_list in record_folder.items(): # nested for loop for a dictionary
-            print(f"\n{folder_name}: {len(info_list)} total images")
-            for info in info_list:
-                print(info)
-            records.extend(info_list) # to collect all data into one flat record for data frame
-        data_frame = pd.DataFrame(records)
-        return data_frame
+        # records = []
+        # # for folder_name, info_list in record_folder.items(): # nested for loop for a dictionary
+        # #     print(f"\n{folder_name}: {len(info_list)} total images")
+        # #     for info in info_list:
+        # #         print(info)
+        # #     records.extend(info_list) # to collect all data into one flat record for data frame
+        # data_frame = pd.DataFrame(records)
+        # return data_frame

@@ -124,9 +124,9 @@ def prompt_species_selection(available: list[str]) -> list[str]:
 
     while True:  # keeps the menu running until we get a confirmed selection or exit
         _print_species_list(available)
-        print("\n1.  Select all species")
-        print("\n2.  Select a custom set")
-        print("\n3.  Exit")
+        print("\n  1.  Select all species")
+        print("\n  2.  Select a custom set")
+        print("\n  3.  Exit")
         choice = input("\n[Enter a number]: ").strip()
 
         if choice == "1":
