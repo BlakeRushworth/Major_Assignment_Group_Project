@@ -1,27 +1,42 @@
 from pathlib import Path
+import os
 import matplotlib.pyplot as plt
+import cv2
 import pandas as pd
 import seaborn as sns
 class EDAService:
     """Generate and save EDA outputs for the indexed image dataset."""
     
-    def __init__(self, dataframe: pd.DataFrame, output_dir: Path) -> None:
+    def __init__(
+        self,
+        dataframe: pd.DataFrame,
+        output_dir: Path
+    ) -> None:
+
         self.dataframe = dataframe
         self.output_dir = output_dir
 
+        self.output_dir.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
     def save_class_distribution(self) -> None:
         """Save a class-count chart for the dataset."""
-
+        base_dir = self.output_dir / "class_distribution_charts"
+        base_dir.mkdir(parents=True, exist_ok=True)
+        self._clear_png_files(base_dir)
         plt.figure(figsize=(12, 6))
-        order = self.dataframe["label"].value_counts().index
-        sns.countplot(data=self.dataframe, x="label", order=order)
+        order = self.dataframe["species"].value_counts().index
+        sns.countplot(data=self.dataframe, x="species", order=order)
         plt.xticks(rotation=90)
         plt.title("Macroinvertebrate Images per Class")
         plt.tight_layout()
-        plt.savefig(self.output_dir / "class_distribution.png")
+        plt.savefig(base_dir / "class_distribution.png")
+        self._open_directory(base_dir)
         plt.close()
     
-    def save_image_size_distribution(self) -> None:
+    def save_image_size_distribution(self,per_species: bool = False) -> None:
         """Save width and height distribution charts."""
         base_dir = self.output_dir / "image_size_charts"
         base_dir.mkdir(parents=True, exist_ok=True)
@@ -332,7 +347,22 @@ class EDAService:
 
         return {
         "total_images": int(len(self.dataframe)),
-        "total_classes": int(self.dataframe["label"].nunique()),
+        "total_classes": int(self.dataframe["species"].nunique()),
         "mean_width": float(self.dataframe["width"].mean()),
         "mean_height": float(self.dataframe["height"].mean()),
         }
+    
+    def _clear_png_files(self, directory: Path) -> None:
+        """Delete old PNG files from a directory to keep clean."""
+
+        for file in directory.glob("*.png"):
+
+            try:
+                file.unlink()
+
+            except PermissionError:
+                print(f"Could not delete {file}")
+
+    def _open_directory(self, directory: Path) -> None:
+        """Open folder in File Explorer."""
+        os.startfile(directory)
