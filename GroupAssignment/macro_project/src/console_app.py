@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from PIL import Image
 from src.services.eda_service import EDAService
 from src.config import AppConfig
 from src.setup_check import run_setup
@@ -128,22 +129,22 @@ class ConsoleApp:
             self.print_image_manipulation_menu()
             user_input = input("[Enter a number]: ")
             if user_input == "1":
-                filepath = self.image_manipulation_choose_image()
+                filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
-                    image_manipulation = self.Image_Manipulation_Functions()
-                    image_manipulation.resize_img()
+                    #image_manipulation = self.Image_Manipulation_Functions()
+                    #image_manipulation.resize_img()
                     break
             elif user_input == "2":
-                filepath = ConsoleApp.image_manipulation_choose_image()
+                filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
-                    image_manipulation = self.Image_Manipulation_Functions()
-                    image_manipulation.greyscale_img()
+                    #image_manipulation = self.Image_Manipulation_Functions()
+                    #image_manipulation.greyscale_img()
                     break
             elif user_input == "3":
-                filepath = ConsoleApp.image_manipulation_choose_image()
+                filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
-                    image_manipulation = self.Image_Manipulation_Functions()
-                    image_manipulation.option_3()
+                    #image_manipulation = self.Image_Manipulation_Functions()
+                    #image_manipulation.option_3()
                     break
             elif user_input == "4":
                 print("going back")
@@ -155,7 +156,7 @@ class ConsoleApp:
 
     def image_manipulation_choose_image(self):
         filepath_input = input("[Enter file path of Image]: ")
-        if is_image(filepath_input):
+        if self.is_image(filepath_input):
             return filepath_input
         else:
             self.print_invalid_filepath()
