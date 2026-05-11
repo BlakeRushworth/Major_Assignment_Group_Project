@@ -77,9 +77,9 @@ class DatasetIndexer:
             'file_path': 'first'   # Just take the first path as an example
         }).reset_index()
 
-        print("\n" + "="*50)
-        print("DATASET SUMMARY")
-        print("="*50)
+        print("\n" + "="*55)
+        print("\nDATASET SUMMARY\n")
+        print("="*55)
 
         for _, row in summary.iterrows():
             # Clean the label (remove numbers if they are like 'oak_01')
@@ -89,5 +89,5 @@ class DatasetIndexer:
             print(f" - Name:            {clean_name}")
             print(f" - Total Images:    {row['label']}")
             print(f" - Avg Dimensions:  {row['width']:.1f}x{row['height']:.1f}")
-            print(f" - Base Filepath:   {Path(row['file_path']).parent}")
-        print("="*50)
+            print(f" - Base Filepath:   {Path(row['file_path']).parent} \n")
+        print("="*55)
