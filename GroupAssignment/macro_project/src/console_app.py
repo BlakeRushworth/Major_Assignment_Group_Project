@@ -152,7 +152,7 @@ class ConsoleApp:
                 filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
                     image_manipulation = Image_Manipulation_Functions()
-                    image_manipulation.option_3(filepath)
+                    image_manipulation.invert_img(filepath)
                     break
             elif user_input == "4":
                 print("going back")
@@ -221,7 +221,7 @@ class ConsoleApp:
         print("=" * 55)
         print("\n  1: Resize image")
         print("  2: Greyscale image")
-        print("  3: option 3")
+        print("  3: Invert image")
         print("  4: Back \n")
 
     def print_graph_menu(self):
