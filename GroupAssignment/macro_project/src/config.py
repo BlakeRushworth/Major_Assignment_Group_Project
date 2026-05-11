@@ -4,6 +4,7 @@ class AppConfig:
     # Root Directories
     BASE_DIR = Path(__file__).resolve().parent.parent
     DATA_DIR = BASE_DIR / "data"
+    PROCESSED_DIR = DATA_DIR / "processed"
     RAW_DATA_DIR = DATA_DIR / "raw"
     DATASET_DIR = RAW_DATA_DIR / "stream_macroinvertebrates"
     # Output Directories
