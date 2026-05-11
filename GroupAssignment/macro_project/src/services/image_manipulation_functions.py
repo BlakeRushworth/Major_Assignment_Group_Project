@@ -26,9 +26,9 @@ class Image_Manipulation_Functions:
             img = load_img(random_path, target_size=(new_size[1], new_size[0])) #new size is a list with the first value height size and second width size
             # convert image to a numpy array
             img_array = img_to_array(img)
-            self.save_filename = 'species_re-sized('+str(count)+').jpg'
+            save_filename = 'species_re-sized('+str(count)+').jpg'
             #print(f"{save_filename = }")
-            full_save_path = os.path.join(save_path_dir, save_filename)
+            full_save_path = os.path.join(self.save_path_dir, save_filename)
             save_img(full_save_path, img_array)
             # load the image to confirm it was saved correctly
             img = load_img(full_save_path)
@@ -55,7 +55,7 @@ class Image_Manipulation_Functions:
             img_array = img_to_array(img)
             save_filename = 'species_grayscaled('+str(count)+').jpg'
             #print(f"{save_filename = }")
-            full_save_path = os.path.join(save_path_dir, save_filename)
+            full_save_path = os.path.join(self.save_path_dir, save_filename)
             save_img(full_save_path, img_array)
             # load the image to confirm it was saved correctly
             img = load_img(full_save_path)

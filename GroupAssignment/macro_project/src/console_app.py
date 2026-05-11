@@ -139,15 +139,12 @@ class ConsoleApp:
                 if resize_value is not None:
                     image_manipulation = Image_Manipulation_Functions()
                     image_manipulation.resize_img(self.df, resize_value)
-                    break
             elif user_input == "2":
                 image_manipulation = Image_Manipulation_Functions()
                 image_manipulation.greyscale_img(self.df)
-                break
             elif user_input == "3":
                 image_manipulation = Image_Manipulation_Functions()
                 image_manipulation.invert_img(self.df)
-                break
             elif user_input == "4":
                 print("going back")
                 break
