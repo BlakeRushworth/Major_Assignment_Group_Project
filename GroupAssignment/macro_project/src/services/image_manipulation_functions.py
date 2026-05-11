@@ -1,14 +1,20 @@
 import matplotlib.pyplot as plt
 import os
-
 import cv2
 import numpy as np
+from src.config import AppConfig
+from pathlib import Path
+Path(AppConfig.PROCESSED_DATA_DIR).mkdir(parents=True, exist_ok=True)
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import save_img
 from keras.preprocessing.image import img_to_array
 
 
 class Image_Manipulation_Functions:
+    def __init__(self):
+        self.save_path_dir = Path(AppConfig.PROCESSED_DATA_DIR)
+        self.save_path_dir.mkdir(parents=True, exist_ok=True)
+
     def resize_img(self, dataframe, new_size):
         count = 0
         for species in dataframe["species"].unique():
@@ -20,9 +26,7 @@ class Image_Manipulation_Functions:
             img = load_img(random_path, target_size=(new_size[1], new_size[0])) #new size is a list with the first value height size and second width size
             # convert image to a numpy array
             img_array = img_to_array(img)
-            # save the image with a new filename
-            save_path_dir = 'data\processed'
-            save_filename = 'species_re-sized('+str(count)+').jpg'
+            self.save_filename = 'species_re-sized('+str(count)+').jpg'
             #print(f"{save_filename = }")
             full_save_path = os.path.join(save_path_dir, save_filename)
             save_img(full_save_path, img_array)
@@ -36,7 +40,7 @@ class Image_Manipulation_Functions:
             plt.imshow(img)
             plt.axis('off') # Turn off axis labels
             plt.show()
-            print(f"\nImage successfully re-sized into: {save_path_dir}")
+            print(f"\nImage successfully re-sized into: {self.save_path_dir}")
 
     def greyscale_img(self, dataframe):
         count = 0
@@ -49,8 +53,6 @@ class Image_Manipulation_Functions:
             img = load_img(random_path, color_mode='grayscale')
             # convert image to a numpy array
             img_array = img_to_array(img)
-            # save the image with a new filename
-            save_path_dir = 'data\processed'
             save_filename = 'species_grayscaled('+str(count)+').jpg'
             #print(f"{save_filename = }")
             full_save_path = os.path.join(save_path_dir, save_filename)
@@ -65,7 +67,7 @@ class Image_Manipulation_Functions:
             plt.imshow(img)
             plt.axis('off') # Turn off axis labels
             plt.show()
-            print(f"\nImage successfully grayscaled Species({species}) into: {save_path_dir}")
+            print(f"\nImage successfully grayscaled Species({species}) into: {self.save_path_dir}")
     
     def invert_img(self, dataframe):
         count = 0
@@ -78,11 +80,9 @@ class Image_Manipulation_Functions:
             img = load_img(random_path, color_mode='rgb')
             # convert image to a numpy array
             img_array = img_to_array(img)
-            # save the image with a new filename
-            save_path_dir = 'data\processed'
             save_filename = 'species_inverted('+str(count)+').jpg'
             #print(f"{save_filename = }")
-            full_save_path = os.path.join(save_path_dir, save_filename)
+            full_save_path = os.path.join(self.save_path_dir, save_filename)
 
             inverted_img_array = 255 - img_array
             save_img(full_save_path, inverted_img_array)
@@ -96,5 +96,5 @@ class Image_Manipulation_Functions:
             plt.imshow(img)
             plt.axis('off') # Turn off axis labels
             plt.show()
-            print(f"\nImage successfully inverted Species({species}) into: {save_path_dir}")
+            print(f"\nImage successfully inverted Species({species}) into: {self.save_path_dir}")
     
