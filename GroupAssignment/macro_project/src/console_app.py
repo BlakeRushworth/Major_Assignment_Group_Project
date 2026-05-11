@@ -135,25 +135,19 @@ class ConsoleApp:
             self.print_image_manipulation_menu()
             user_input = input("[Enter a number]: ")
             if user_input == "1":
-                filepath = ConsoleApp.image_manipulation_choose_image(self)
-                if filepath is not None:
-                    resize_value: list = ConsoleApp.image_manipulation_resize_input(self)
-                    if resize_value is not None:
-                        image_manipulation = Image_Manipulation_Functions()
-                        image_manipulation.resize_img(filepath, resize_value)
-                        break
+                resize_value: list = ConsoleApp.image_manipulation_resize_input(self)
+                if resize_value is not None:
+                    image_manipulation = Image_Manipulation_Functions()
+                    image_manipulation.resize_img(self.df, resize_value)
+                    break
             elif user_input == "2":
-                filepath = ConsoleApp.image_manipulation_choose_image(self)
-                if filepath is not None:
-                    image_manipulation = Image_Manipulation_Functions()
-                    image_manipulation.greyscale_img(filepath)
-                    break
+                image_manipulation = Image_Manipulation_Functions()
+                image_manipulation.greyscale_img(self.df)
+                break
             elif user_input == "3":
-                filepath = ConsoleApp.image_manipulation_choose_image(self)
-                if filepath is not None:
-                    image_manipulation = Image_Manipulation_Functions()
-                    image_manipulation.invert_img(filepath)
-                    break
+                image_manipulation = Image_Manipulation_Functions()
+                image_manipulation.invert_img(self.df)
+                break
             elif user_input == "4":
                 print("going back")
                 break
@@ -174,20 +168,20 @@ class ConsoleApp:
             return None
         return [int(resize_x_input), int(resize_y_input)]
 
-    def image_manipulation_choose_image(self):
-        filepath_input = input("[Enter file path of Image]: ")
-        if self.is_image(filepath_input):
-            return filepath_input
-        else:
-            self.print_invalid_filepath()
+    # def image_manipulation_choose_image(self):
+    #     filepath_input = input("[Enter file path of Image]: ")
+    #     if self.is_image(filepath_input):
+    #         return filepath_input
+    #     else:
+    #         self.print_invalid_filepath()
 
-    def is_image(self, file_path):
-        try:
-            with Image.open(file_path) as img:
-                img.verify()  # Verifies the file is actually an image
-            return True
-        except (IOError, SyntaxError):
-            return False
+    # def is_image(self, file_path):
+    #     try:
+    #         with Image.open(file_path) as img:
+    #             img.verify()  # Verifies the file is actually an image
+    #         return True
+    #     except (IOError, SyntaxError):
+    #         return False
 
     # printing menu -------------------
     def print_invalid_inputsize(self):
@@ -210,8 +204,7 @@ class ConsoleApp:
 
     def print_invalid_filepath(self):
         print("=" * 55)
-        print(
-            "\n ERROR: file path given either wasnt found or wasnt an image. \n Please check file type and path of the image you are trying to select. \n")
+        print("\n ERROR: file path given either wasnt found or wasnt an image. \n Please check file type and path of the image you are trying to select. \n")
         print("=" * 55)
         user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
 
