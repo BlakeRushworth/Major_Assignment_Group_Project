@@ -4,6 +4,7 @@ from PIL import Image
 from src.services.eda_service import EDAService
 from src.config import AppConfig
 from src.setup_check import run_setup
+from src.services.image_manipulation_functions import Image_Manipulation_Functions
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 class ConsoleApp:
@@ -20,16 +21,16 @@ class ConsoleApp:
         self.eda_service = EDAService(self.df,AppConfig.EDA_OUTPUT_DIR)
         self.main_menu()
 
-    def post_action_navigation(self):
-        print("\n" + "-" * 20)
-        print("1. Back to Menu")
-        print("2. Exit Program")
+    # def post_action_navigation(self):
+    #     #print("\n test")
+    #     print("1. Back to Menu")
+    #     print("2. Exit Program")
 
-        choice = input("\n[Select an option]: ")
+    #     choice = input("\n[Select an option]: ")
 
-        if choice == "2":
-            self.print_close_application()
-            sys.exit()
+    #     if choice == "2":
+    #         self.print_close_application()
+    #         sys.exit()
 
     def main_menu(self):
         while True:
@@ -48,11 +49,12 @@ class ConsoleApp:
                 break
             
             else:
-                ConsoleApp.print_invalid_input()
+                ConsoleApp.print_invalid_input(self)
 
     def dataset_summary_menu(self):
         self.workflow.display_summary(self.df)
-        self.post_action_navigation()
+        user_check = input("\n[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
+        #self.post_action_navigation()
 
     def graphs_menu(self):
 
@@ -64,25 +66,29 @@ class ConsoleApp:
 
             if user_input == "1":
                 self.eda_service.save_class_distribution()
-                print("Saved class distribution graph.")
+                print("\nSaved class distribution graph.")
+                break
 
             elif user_input == "2":
                 self.analysis_mode_menu("size")
-                print("Saved image size distribution graph.")
+                print("\nSaved image size distribution graph.")
+                break
 
             elif user_input == "3":
                 self.analysis_mode_menu("sample")
-                print("Saved sample image grid.")
+                print("\nSaved sample image grid.")
+                break
 
             elif user_input == "4":
                 self.analysis_mode_menu("brightness")
-                print("Saved brightness distribution graph.")
+                print("\nSaved brightness distribution graph.")
+                break
 
             elif user_input == "5":
                 break
 
             else:
-                self.print_invalid_input()
+                self.print_invalid_input(self)
 
     def analysis_mode_menu(self, graph_type : str):
 
@@ -122,7 +128,7 @@ class ConsoleApp:
                 break
 
             else:
-                self.print_invalid_input()
+                self.print_invalid_input(self)
 
     def image_manipulation_menu(self):
         while True:
@@ -131,28 +137,42 @@ class ConsoleApp:
             if user_input == "1":
                 filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
-                    #image_manipulation = self.Image_Manipulation_Functions()
-                    #image_manipulation.resize_img()
-                    break
+                    resize_value: list = ConsoleApp.image_manipulation_resize_input(self)
+                    if resize_value is not None:
+                        image_manipulation = Image_Manipulation_Functions()
+                        image_manipulation.resize_img(filepath, resize_value)
+                        break
             elif user_input == "2":
                 filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
-                    #image_manipulation = self.Image_Manipulation_Functions()
-                    #image_manipulation.greyscale_img()
+                    image_manipulation = Image_Manipulation_Functions()
+                    image_manipulation.greyscale_img(filepath)
                     break
             elif user_input == "3":
                 filepath = ConsoleApp.image_manipulation_choose_image(self)
                 if filepath is not None:
-                    #image_manipulation = self.Image_Manipulation_Functions()
-                    #image_manipulation.option_3()
+                    image_manipulation = Image_Manipulation_Functions()
+                    image_manipulation.option_3(filepath)
                     break
             elif user_input == "4":
                 print("going back")
                 break
             else:
-                self.print_invalid_input()
+                self.print_invalid_input(self)
 
     # image manipulation checks -------------------------
+    def image_manipulation_resize_input(self):
+        try:
+            resize_x_input: int = int(input("[Enter new image width size]: "))
+        except ValueError:
+            self.print_invalid_inputsize()
+            return None
+        try:
+            resize_y_input: int = int(input("[Enter new image height size]: "))
+        except ValueError:
+            self.print_invalid_inputsize()
+            return None
+        return [int(resize_x_input), int(resize_y_input)]
 
     def image_manipulation_choose_image(self):
         filepath_input = input("[Enter file path of Image]: ")
@@ -170,6 +190,11 @@ class ConsoleApp:
             return False
 
     # printing menu -------------------
+    def print_invalid_inputsize(self):
+        print("=" * 55)
+        print("\n ERROR: Input was not valid. Please enter a number (int). for example: 128 (units are in px) \n")
+        print("=" * 55)
+        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
 
     def print_close_application(self):
         print("=" * 55)
