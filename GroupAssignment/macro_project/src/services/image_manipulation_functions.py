@@ -54,16 +54,10 @@ class Image_Manipulation_Functions:
             # convert image to a numpy array
             img_array = img_to_array(img)
             save_filename = 'species_grayscaled('+str(count)+').jpg'
-            #print(f"{save_filename = }")
             full_save_path = os.path.join(self.save_path_dir, save_filename)
             save_img(full_save_path, img_array)
             # load the image to confirm it was saved correctly
             img = load_img(full_save_path)
-            # print(type(img))
-            # print(img.format)
-            # print(img.mode)
-            # print(img.size)
-            # # show the image using matplotlib
             plt.imshow(img)
             plt.axis('off') # Turn off axis labels
             plt.show()

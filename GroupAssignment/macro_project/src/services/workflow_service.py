@@ -2,10 +2,12 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.dataset_index import DatasetIndexer
-
+from src.config import AppConfig
 class WorkflowService:
     def __init__(self):
         self.indexer = None
+        AppConfig.create_required_dir()
+
 
     def initialize_data(self, species_list):
         # Create the indexer and build the dataframe once
