@@ -1,7 +1,11 @@
-.venv/
+# hashtagged dont exist for us since we didnt do stage 2
+#.venv/
 __pycache__/
-*.pyc
-.idea/
-.DS_Store
-data/
-outputs/
+#*.pyc
+#.idea/
+#.DS_Store
+eda/
+models/
+reports/
+processed/
+raw/
