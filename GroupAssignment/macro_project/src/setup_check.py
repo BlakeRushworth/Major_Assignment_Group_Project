@@ -105,7 +105,7 @@ def _parse_custom_input(raw: str, available: list[str]) -> list[str] | None:
     indices = [int(p) for p in parts]  # convert strings to integers
 
     if any(i < 1 or i > len(available) for i in indices):  # check numbers are within valid range
-        print(f"\nNumbers must be between 1 and {len(available)}. Try again.")
+        print(f"\nNumbers must be between 1 and {len(available)} (due to your dataset size). Try again.")
         return None
 
     if len(set(indices)) != len(indices):  # set() removes duplicates — if lengths differ, there were duplicates
@@ -137,13 +137,22 @@ def prompt_species_selection(available: list[str]) -> list[str]:
 
         elif choice == "2":
             while True:  # inner loop just for the custom input — stays here until valid + confirmed or retried
-                print("\n  Type the numbers of the species you want, separated by spaces or commas.")
+                print("=" * 55)
+                print("\n  Type the numbers of the species you want, separated by spaces or commas. \n  |You MUST have 3 species atleast or entire dataset!|")
                 print("  Example:  1, 3, 5  or  1 3 5\n")
                 raw = input("  Your selection: ").strip()
-
+                
                 selected = _parse_custom_input(raw, available)
+
                 if selected is None:
                     continue  # _parse_custom_input already printed the error, just ask again
+
+                if len(selected)< 3 and len(selected) < len(available):
+                    print("=" * 55)
+                    print("\n ERROR: invalid amount of species, must need 3 species or entire dataset. \n")
+                    print("=" * 55)
+                    user_check = input("[Press Enter to Continue]: ")
+                    continue #not enough species were picks
 
                 if _confirm_selection(selected):
                     return selected  # confirmed — exit everything and return the list
