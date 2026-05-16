@@ -15,24 +15,18 @@ class ConsoleApp:
         self.eda_service = None
 
     def run(self):
-        # Index the data once so it's ready for any menu option
+        '''Index the data once so it's ready for any menu option'''
+
         print("\n[System] Preparing dataset...")
         self.df = self.workflow.initialize_data(self.selection["selected_species"])
         self.eda_service = EDAService(self.df,AppConfig.EDA_OUTPUT_DIR)
         self.main_menu()
 
-    # def post_action_navigation(self):
-    #     #print("\n test")
-    #     print("1. Back to Menu")
-    #     print("2. Exit Program")
-
-    #     choice = input("\n[Select an option]: ")
-
-    #     if choice == "2":
-    #         self.print_close_application()
-    #         sys.exit()
+#menus -----------------------------------
 
     def main_menu(self):
+        ''' main menu logic'''
+
         while True:
             self.print_main_menu()
             user_input = input("[Enter a number]: ")
@@ -52,11 +46,13 @@ class ConsoleApp:
                 ConsoleApp.print_invalid_input(self)
 
     def dataset_summary_menu(self):
+        ''' summaries the data of selected species '''
         self.workflow.display_summary(self.df)
         user_check = input("\n[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
-        #self.post_action_navigation()
+
 
     def graphs_menu(self):
+        ''' graph menu logic '''
 
         while True:
 
@@ -91,7 +87,8 @@ class ConsoleApp:
                 self.print_invalid_input(self)
 
     def analysis_mode_menu(self, graph_type : str):
-
+        ''' second stage of graph menu, for selecting all or indiviual species'''
+        
         while True:
 
             self.print_analysis_mode_menu()
@@ -131,6 +128,8 @@ class ConsoleApp:
                 self.print_invalid_input(self)
 
     def image_manipulation_menu(self):
+        ''' image manipulation menu logic'''
+
         while True:
             self.print_image_manipulation_menu()
             user_input = input("[Enter a number]: ")
@@ -151,100 +150,8 @@ class ConsoleApp:
             else:
                 self.print_invalid_input(self)
 
-    # image manipulation checks -------------------------
-    def image_manipulation_resize_input(self):
-        try:
-            resize_x_input: int = int(input("[Enter new image width size]: "))
-        except ValueError:
-            self.print_invalid_inputsize()
-            return None
-        try:
-            resize_y_input: int = int(input("[Enter new image height size]: "))
-        except ValueError:
-            self.print_invalid_inputsize()
-            return None
-        return [int(resize_x_input), int(resize_y_input)]
-
-    # def image_manipulation_choose_image(self):
-    #     filepath_input = input("[Enter file path of Image]: ")
-    #     if self.is_image(filepath_input):
-    #         return filepath_input
-    #     else:
-    #         self.print_invalid_filepath()
-
-    # def is_image(self, file_path):
-    #     try:
-    #         with Image.open(file_path) as img:
-    #             img.verify()  # Verifies the file is actually an image
-    #         return True
-    #     except (IOError, SyntaxError):
-    #         return False
-
-    # printing menu -------------------
-    def print_invalid_inputsize(self):
-        print("=" * 55)
-        print("\n ERROR: Input was not valid. Please enter a number (int). for example: 128 (units are in px) \n")
-        print("=" * 55)
-        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
-
-    def print_close_application(self):
-        print("=" * 55)
-        print("\n  Closing Application \n")
-        print("=" * 55)
-        print("Closed.")
-
-    def print_invalid_input(self):
-        print("=" * 55)
-        print("\n ERROR: Input was not valid. Please press a number according to what you want selected. \n")
-        print("=" * 55)
-        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
-
-    def print_invalid_filepath(self):
-        print("=" * 55)
-        print("\n ERROR: file path given either wasnt found or wasnt an image. \n Please check file type and path of the image you are trying to select. \n")
-        print("=" * 55)
-        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
-
-    def print_image_manipulation_menu(self):
-        print("=" * 55)
-        print("\n Image Manipulation \n")
-        print("=" * 55)
-        print("\n  1: Resize image")
-        print("  2: Greyscale image")
-        print("  3: Invert image")
-        print("  4: Back \n")
-
-    def print_graph_menu(self):
-        print("=" * 55)
-        print("\n Graphing Data Charts\n")
-        print("=" * 55)
-        print("\n  1: Class Distribution")
-        print("  2: Image Size Distribution")
-        print("  3: Sample Image Grid")
-        print("  4: Brightness Distribution")
-        print("  5: Back \n")
-
-    def print_analysis_mode_menu(self):
-
-        print("=" * 55)
-        print("\n Analysis Mode \n")
-        print("=" * 55)
-
-        print("\n  1: Overall Selected Dataset")
-        print("  2: Per Species Chosen")
-        print("  3: Back\n")
-
-    def print_main_menu(self):
-        print("=" * 55)
-        print("\n Application \n")
-        print("=" * 55)
-        print("\n  1: View Dataset Summary")
-        print("  2: Chart Generation")
-        print("  3: Image Manipulation")
-        print("  4: Choose Another Dataset \n")
-        print("  5: Close application \n")
-
     def change_dataset(self):
+        ''' print changing dataset section'''
 
         print("\n[System] Returning to dataset selection...\n")
 
@@ -260,3 +167,96 @@ class ConsoleApp:
         )
 
         print("\n[System] Dataset updated successfully.\n")
+
+    # image manipulation checks -------------------------
+    def image_manipulation_resize_input(self):
+        try:
+            resize_x_input: int = int(input("[Enter new image width size]: "))
+        except ValueError:
+            self.print_invalid_inputsize()
+            return None
+        try:
+            resize_y_input: int = int(input("[Enter new image height size]: "))
+        except ValueError:
+            self.print_invalid_inputsize()
+            return None
+        return [int(resize_x_input), int(resize_y_input)]
+
+    # printing menus -------------------
+    def print_invalid_inputsize(self):
+        '''print custom invalid inputsize error for resizing image'''
+
+        print("=" * 55)
+        print("\n ERROR: Input was not valid. Please enter a number (int). for example: 128 (units are in px) \n")
+        print("=" * 55)
+        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
+
+    def print_close_application(self):
+        '''prints closing applicaiton section'''
+
+        print("=" * 55)
+        print("\n  Closing Application \n")
+        print("=" * 55)
+        print("Closed.")
+
+    def print_invalid_input(self):
+        '''prints custom invalid input error'''
+
+        print("=" * 55)
+        print("\n ERROR: Input was not valid. Please press a number according to what you want selected. \n")
+        print("=" * 55)
+        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
+
+    def print_invalid_filepath(self):
+        '''prints custom invalid file path error'''
+
+        print("=" * 55)
+        print("\n ERROR: file path given either wasnt found or wasnt an image. \n Please check file type and path of the image you are trying to select. \n")
+        print("=" * 55)
+        user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
+
+    def print_image_manipulation_menu(self):
+        ''' prints 3 types of image manipulation options: resize, grayscale and invert'''
+
+        print("=" * 55)
+        print("\n Image Manipulation \n")
+        print("=" * 55)
+        print("\n  1: Resize image")
+        print("  2: Greyscale image")
+        print("  3: Invert image")
+        print("  4: Back \n")
+
+    def print_graph_menu(self):
+        ''' prints 4 types of graph options: class distribution, sample size distribution, sample image grid and brightness distribution'''
+
+        print("=" * 55)
+        print("\n Graphing Data Charts\n")
+        print("=" * 55)
+        print("\n  1: Class Distribution")
+        print("  2: Image Size Distribution")
+        print("  3: Sample Image Grid")
+        print("  4: Brightness Distribution")
+        print("  5: Back \n")
+
+    def print_analysis_mode_menu(self):
+        ''' prints which species options the user would like to select of the graphing option they chose'''
+
+        print("=" * 55)
+        print("\n Analysis Mode \n")
+        print("=" * 55)
+
+        print("\n  1: Overall Selected Dataset")
+        print("  2: Per Species Chosen")
+        print("  3: Back\n")
+
+    def print_main_menu(self):
+        '''print main menus options: view dataset summary, chart generation, image manipulation, change dataset and close application'''
+
+        print("=" * 55)
+        print("\n Application \n")
+        print("=" * 55)
+        print("\n  1: View Dataset Summary")
+        print("  2: Chart Generation")
+        print("  3: Image Manipulation")
+        print("  4: Choose Another Dataset \n")
+        print("  5: Close application \n")
