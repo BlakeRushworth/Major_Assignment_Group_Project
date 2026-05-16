@@ -1,4 +1,4 @@
-# hashtagged dont exist for us since we didnt do stage 2
+# hashtagged dont exist for us since we didn't do stage 2
 #.venv/
 __pycache__/
 #*.pyc

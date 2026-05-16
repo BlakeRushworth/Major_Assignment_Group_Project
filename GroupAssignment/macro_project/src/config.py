@@ -1,6 +1,13 @@
 from pathlib import Path
 
 class AppConfig:
+    """
+    Central configuration class for the Macroinvertebrate Analysis System.
+
+    All paths and settings are defined here as class-level constants so that
+    any module can import them with a single line:
+        from src.config import AppConfig
+    """
     # Root Directories
     BASE_DIR = Path(__file__).resolve().parent.parent
     DATA_DIR = BASE_DIR / "data"

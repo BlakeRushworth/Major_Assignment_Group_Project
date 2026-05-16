@@ -6,6 +6,10 @@ from src.console_app import ConsoleApp
 from src.services.workflow_service import WorkflowService
  
 def main() -> None:
+    """
+    Initializes the workflow service, fetches user setup configurations,
+    and starts the interactive console application menu.
+    """
     selection: dict = run_setup()
     workflow = WorkflowService()
     menu = ConsoleApp(workflow, selection)

@@ -7,7 +7,18 @@ import pandas as pd
 from src.config import AppConfig
 
 class DatasetIndexer:
-    """Scan the dataset folder and build a tabular image index."""
+    """
+        Scan the dataset folder and build a tabular image index.
+
+        Walks the dataset directory recursively, reads each supported image
+        with OpenCV, and collects metadata into a flat list of dicts which is
+        then returned as a pandas DataFrame.
+
+        Attributes
+            data_dir       : Path — the folder that is actually scanned (resolved at init).
+            species_filter : list[str] | None — if provided, only images whose parent
+                             folder name matches an entry in this list are included.
+    """
 
     def __init__(self, selected, data_dir: Path = AppConfig.RAW_DATA_DIR) -> None:
         self.data_dir = data_dir
@@ -18,7 +29,18 @@ class DatasetIndexer:
             self.data_dir = AppConfig.RAW_DATA_DIR
     
     def build_dataframe(self) -> pd.DataFrame:
-        """Return one row per image with file path, label, and dimensions."""
+        """
+        Goes through the dataset directory, returns one row per image with file path, label, and dimensions.
+
+        Skips files whose extension is not in SUPPORTED_EXTENSIONS and skips
+        any image that OpenCV cannot decode. Images are grouped by species
+        folder first (record_folder dict) then flattened into a single list
+        so the final DataFrame has a consistent row order.
+
+        Returns pd.DataFrame
+            Columns: label (filename stem), species (folder name),
+            width (px), height (px), channels (1 or 3), file_path (str).
+        """
         record_folder = {}
         for file_path in self.data_dir.rglob("*"):
             # Skip non-image files
@@ -63,7 +85,17 @@ class DatasetIndexer:
         return data_frame
 
     def get_summary(self, df: pd.DataFrame):
-        """Prints a clean summary of the dataset grouping by species."""
+        """
+        Prints a clean summary of the dataset grouping by species.
+
+        Groups the DataFrame by species and aggregates image count,
+        average dimensions, and a representative file path for each group.
+        Does nothing if the DataFrame is empty.
+
+        Parameters
+            df : pd.DataFrame
+                The indexed dataset returned by build_dataframe().
+        """
         if df.empty:
             print("No data available to summarize.")
             return

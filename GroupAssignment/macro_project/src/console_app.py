@@ -8,25 +8,45 @@ from src.services.image_manipulation_functions import Image_Manipulation_Functio
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 class ConsoleApp:
+    """
+    Console-based interface for the Macroinvertebrate Image Analysis System.
+
+    Handles all user interaction after setup. Provides menus for viewing
+    dataset summaries, generating charts, and applying image manipulations.
+
+    Attributes
+        workflow      : WorkflowService instance used to build and query the dataset.
+        selection     : dict returned by run_setup() containing selected_species.
+        df            : pd.DataFrame is built once at startup, shared across all menus.
+        eda_service   : EDAService instance is initialised after the dataframe is ready.
+    """
     def __init__(self, workflow, selection):
         self.workflow = workflow
         self.selection = selection
-        self.df = None  # We will fill this once
-        self.eda_service = None
+        self.df = None           # filled by run() before any menu is shown
+        self.eda_service = None  # filled by run() after df is ready
 
     def run(self):
-        '''Index the data once so it's ready for any menu option'''
+        """
+        Entry point: indexes the dataset once, then launches the main menu.
 
+        Building the dataframe here (rather than in __init__) means the heavy
+        disk scan only happens once per session, and all menu options can reuse
+        the same in-memory result.
+        """
         print("\n[System] Preparing dataset...")
         self.df = self.workflow.initialize_data(self.selection["selected_species"])
         self.eda_service = EDAService(self.df,AppConfig.EDA_OUTPUT_DIR)
         self.main_menu()
 
-#menus -----------------------------------
-
+    # Menus
     def main_menu(self):
-        ''' main menu logic'''
+        """
+        Main navigation loop, it routes the user to sub-menus or exits.
 
+        Keeps running until the user selects option 5 (close application).
+        Invalid input is caught and re-prompted without crashing.
+        """
         while True:
             self.print_main_menu()
             user_input = input("[Enter a number]: ")
@@ -46,18 +66,28 @@ class ConsoleApp:
                 ConsoleApp.print_invalid_input(self)
 
     def dataset_summary_menu(self):
-        ''' summaries the data of selected species '''
+        """
+        Display a statistical summary of the currently loaded dataset.
+
+        Delegates to WorkflowService.display_summary(), which calls
+        DatasetIndexer.get_summary() to print per-species stats.
+        The input pause lets the user read before the menu redraws.
+        """
         self.workflow.display_summary(self.df)
         user_check = input("\n[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
 
 
     def graphs_menu(self):
-        ''' graph menu logic '''
+        """
+        Chart generation sub-menu, it lets the user choose which EDA chart to produce.
 
+        Options 2–4 route to analysis_mode_menu() so the user can choose
+        between an overall chart or a per-species breakdown.
+        Option 1 (class distribution) always covers all species, so it goes
+        straight to EDAService without a mode prompt.
+        """
         while True:
-
             self.print_graph_menu()
-
             user_input = input("[Enter a number]: ")
 
             if user_input == "1":
@@ -87,53 +117,60 @@ class ConsoleApp:
                 self.print_invalid_input(self)
 
     def analysis_mode_menu(self, graph_type : str):
-        ''' second stage of graph menu, for selecting all or indiviual species'''
-        
+        """
+        Secondary graph menu, to choose between overall or per-species output.
+
+        Called by graphs_menu() after the chart type is already decided.
+        The graph_type parameter determines which EDAService method is invoked.
+
+        Parameters
+            graph_type : str
+                One of "size", "sample", or "brightness" which matches the three
+                EDAService methods that support per_species mode.
+        """
         while True:
-
             self.print_analysis_mode_menu()
-
             user_input = input("[Enter a number]: ")
 
             if user_input == "1":
-
+                # Overall: one chart covering all selected species combined
                 if graph_type == "size":
                     self.eda_service.save_image_size_distribution()
-
                 elif graph_type == "sample":
                     self.eda_service.save_sample_grid()
-
                 elif graph_type == "brightness":
                     self.eda_service.save_brightness_distribution()
-
                 print("Saved overall graph.")
 
             elif user_input == "2":
-
+                # Per species: one chart generated per species folder
                 if graph_type == "size":
                     self.eda_service.save_image_size_distribution(per_species=True)
-
                 elif graph_type == "sample":
                     self.eda_service.save_sample_grid(per_species=True)
-
                 elif graph_type == "brightness":
                     self.eda_service.save_brightness_distribution(per_species=True)
-
                 print("Saved per-species graphs.")
 
             elif user_input == "3":
-                break
+                break # back to graphs_menu
 
             else:
                 self.print_invalid_input(self)
 
     def image_manipulation_menu(self):
-        ''' image manipulation menu logic'''
+        """
+        Image manipulation sub-menu, to apply transforms to a random sample per species.
 
+        Each option picks one random image per species from the loaded dataframe,
+        applies the chosen transformation, saves the result to
+        data/processed/, and displays it via matplotlib.
+        """
         while True:
             self.print_image_manipulation_menu()
             user_input = input("[Enter a number]: ")
             if user_input == "1":
+                # Collect width and height before creating the manipulator
                 resize_value: list = ConsoleApp.image_manipulation_resize_input(self)
                 if resize_value is not None:
                     image_manipulation = Image_Manipulation_Functions()
@@ -151,25 +188,31 @@ class ConsoleApp:
                 self.print_invalid_input(self)
 
     def change_dataset(self):
-        ''' print changing dataset section'''
+        """
+        Re-run the species selection flow and rebuild the dataframe.
+
+        Lets the user switch to a different subset of species mid-session
+        without restarting the program. The EDAService is also re-created
+        so it references the fresh dataframe.
+        """
 
         print("\n[System] Returning to dataset selection...\n")
-
+        # run_setup() prompts the full species selection flow again
         self.selection = run_setup()
-
+        # Rebuild the dataframe with the newly selected species
         self.df = self.workflow.initialize_data(
             self.selection["selected_species"]
         )
-
+        # Re-create EDAService so it uses the updated dataframe
         self.eda_service = EDAService(
             self.df,
             AppConfig.EDA_OUTPUT_DIR
         )
-
         print("\n[System] Dataset updated successfully.\n")
 
-    # image manipulation checks -------------------------
+    # Input validation
     def image_manipulation_resize_input(self):
+        """Prompt the user for a target width and height for resizing."""
         try:
             resize_x_input: int = int(input("[Enter new image width size]: "))
         except ValueError:
@@ -182,42 +225,37 @@ class ConsoleApp:
             return None
         return [int(resize_x_input), int(resize_y_input)]
 
-    # printing menus -------------------
+    # Printing Menus
     def print_invalid_inputsize(self):
-        '''print custom invalid inputsize error for resizing image'''
-
+        """Print a specific error when a non-integer is entered for image dimensions."""
         print("=" * 55)
         print("\n ERROR: Input was not valid. Please enter a number (int). for example: 128 (units are in px) \n")
         print("=" * 55)
         user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
 
     def print_close_application(self):
-        '''prints closing applicaiton section'''
-
+        """Print a goodbye message before the application exits."""
         print("=" * 55)
         print("\n  Closing Application \n")
         print("=" * 55)
         print("Closed.")
 
     def print_invalid_input(self):
-        '''prints custom invalid input error'''
-
+        """Print a generic error when the user enters an option that does not exist."""
         print("=" * 55)
         print("\n ERROR: Input was not valid. Please press a number according to what you want selected. \n")
         print("=" * 55)
         user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
 
     def print_invalid_filepath(self):
-        '''prints custom invalid file path error'''
-
+        """Print an error when a supplied file path does not exist or is not an image."""
         print("=" * 55)
-        print("\n ERROR: file path given either wasnt found or wasnt an image. \n Please check file type and path of the image you are trying to select. \n")
+        print("\n ERROR: file path given either wasn't found or wasn't an image. \n Please check file type and path of the image you are trying to select. \n")
         print("=" * 55)
         user_check = input("[Press Enter to continue]: ")  # gives the user time to read before the menu goes back
 
     def print_image_manipulation_menu(self):
-        ''' prints 3 types of image manipulation options: resize, grayscale and invert'''
-
+        """Print the image manipulation sub-menu with three transform options."""
         print("=" * 55)
         print("\n Image Manipulation \n")
         print("=" * 55)
@@ -227,8 +265,7 @@ class ConsoleApp:
         print("  4: Back \n")
 
     def print_graph_menu(self):
-        ''' prints 4 types of graph options: class distribution, sample size distribution, sample image grid and brightness distribution'''
-
+        """Print the chart generation sub-menu with four chart type options."""
         print("=" * 55)
         print("\n Graphing Data Charts\n")
         print("=" * 55)
@@ -239,8 +276,7 @@ class ConsoleApp:
         print("  5: Back \n")
 
     def print_analysis_mode_menu(self):
-        ''' prints which species options the user would like to select of the graphing option they chose'''
-
+        """Print the analysis mode menu, the overall dataset vs per-species breakdown."""
         print("=" * 55)
         print("\n Analysis Mode \n")
         print("=" * 55)
@@ -250,8 +286,7 @@ class ConsoleApp:
         print("  3: Back\n")
 
     def print_main_menu(self):
-        '''print main menus options: view dataset summary, chart generation, image manipulation, change dataset and close application'''
-
+        """Print the top-level application menu with all five navigation options."""
         print("=" * 55)
         print("\n Application \n")
         print("=" * 55)
