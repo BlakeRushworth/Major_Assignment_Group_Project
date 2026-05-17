@@ -38,7 +38,7 @@ class Image_Manipulation_Functions:
 
     def resize_img(self, filepath, new_size):
         """
-        Resize one random image per species and save + display the result.
+        Resize one image from a filepath given from a user input and save + display the result.
 
         Uses Keras load_img() with target_size so the resize is handled
         cleanly without manual cv2 interpolation calls.
@@ -80,7 +80,7 @@ class Image_Manipulation_Functions:
 
     def greyscale_img(self, filepath):
         """
-        Convert one random image per species to greyscale and save + display it.
+        Convert one image from a filepath given from a user input to greyscale and save + display it.
 
         Passing color_mode='grayscale' to load_img handles the colour
         channel conversion internally, producing a single-channel image.
@@ -114,7 +114,7 @@ class Image_Manipulation_Functions:
     
     def invert_img(self, filepath):
         """
-        Invert the pixel values of one random image per species and save + display it.
+        Invert the pixel values of one image from a filepath given from a user input and save + display it.
 
         Inversion is performed by subtracting each pixel value from 255
         (the maximum 8-bit value). This flips light pixels dark and vice versa.
