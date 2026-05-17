@@ -5,7 +5,7 @@ import cv2
 import re
 import pandas as pd
 from src.config import AppConfig
-from tabulate import tabulategi
+from tabulate import tabulate
 class DatasetIndexer:
     """
     Scan the dataset folder and build a tabular image index.
