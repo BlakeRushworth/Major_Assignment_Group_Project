@@ -16,3 +16,5 @@ class ImagePreprocessor:
         resized = cv2.resize(image, self.image_size)
         normalized = resized.astype("float32") / 255.0
         return normalized.flatten()
+
+    
