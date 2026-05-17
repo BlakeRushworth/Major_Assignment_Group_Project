@@ -107,11 +107,31 @@ class ConsoleApp:
                 break
 
             elif user_input == "4":
-                self.analysis_mode_menu("brightness")
-                print("\nSaved brightness distribution graph.")
+                self.analysis_mode_menu("Brightness")
+                print("\nSaved Brightness graph.")
                 break
 
             elif user_input == "5":
+                self.analysis_mode_menu("WidthVHeight")
+                print("\nSaved Width Vs Height graph.")
+                break
+
+            elif user_input == "6":
+                self.analysis_mode_menu("Width")
+                print("\nSaved Width graph.")
+                break
+
+            elif user_input == "7":
+                self.analysis_mode_menu("Height")
+                print("\nSaved Height graph.")
+                break
+
+            elif user_input == "8":
+                self.analysis_mode_menu("Pixels")
+                print("\nSaved Pixel Intensity graph.")
+                break
+
+            elif user_input == "9":
                 break
 
             else:
@@ -141,6 +161,14 @@ class ConsoleApp:
                     self.eda_service.save_sample_grid()
                 elif graph_type == "brightness":
                     self.eda_service.save_brightness_distribution()
+                elif graph_type == "WidthVHeight":
+                    self.eda_service.save_width_height_scatter_plot()
+                elif graph_type == "Width":
+                    self.eda_service.save_width_boxplot()
+                elif graph_type == "Height":
+                    self.eda_service.save_height_boxplot()
+                elif graph_type == "Pixels":
+                    self.eda_service.save_pixel_intensity_histogram()
                 print("Saved overall graph.")
 
             elif user_input == "2":
@@ -151,6 +179,14 @@ class ConsoleApp:
                     self.eda_service.save_sample_grid(per_species=True)
                 elif graph_type == "brightness":
                     self.eda_service.save_brightness_distribution(per_species=True)
+                elif graph_type == "WidthVHeight":
+                    self.eda_service.save_width_height_scatter_plot(per_species=True)
+                elif graph_type == "Width":
+                    self.eda_service.save_width_boxplot(per_species=True)
+                elif graph_type == "Height":
+                    self.eda_service.save_height_boxplot(per_species=True)
+                elif graph_type == "Pixels":
+                    self.eda_service.save_pixel_intensity_histogram(per_species=True)
                 print("Saved per-species graphs.")
 
             elif user_input == "3":
@@ -271,7 +307,11 @@ class ConsoleApp:
                 ["  2: Image Size Distribution"],
                 ["  3: Sample Image Grid"],
                 ["  4: Brightness Distribution"],
-                ["  5: Back"]
+                ["  5: Width Vs Height Scatter"],
+                ["  6: Width BoxPlot"],
+                ["  7: Height BoxPlot"],
+                ["  8: Pixel Intensity Graph"],
+                ["  9: Back"]
                 ]
         print(tabulate(rows, headers=["Graphing Data Charts"], tablefmt="rounded_outline"))
 
