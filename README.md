@@ -52,34 +52,33 @@ a console menu or a Tkinter GUI dashboard.
      |----|----|---- ... 
 
 # How to Run
-**Stage 1: Console application (EDA + image manipulation)**
+**Stage 1: Console application (EDA + image manipulation)** <br>
 |---- python -m src.main
 - Validates the dataset, prompts species selection, then opens a menu-driven interface
 - From the menu you can view the dataset summary, generate charts, and apply image manipulations
 
 # Folder Structure
-**macro_project**/
-|---- data/
-|----|---- processed/          ← manipulated images saved here
-|----|---- raw/
-|----|----|---- stream_macroinvertebrates/   ← dataset goes here
-|---- outputs/
-|----|---- eda/                ← saved charts and graphs
-|----|---- models/             ← model outputs (Stage 2)
-|---- src/
-|----|---- config.py           ← all paths and settings
-|----|---- main.py             ← console app entry point
-|----|---- app.py              ← Tkinter GUI entry point
-|----|---- console_app.py      ← console menu logic
-|----|---- dataset_index.py    ← image scanning and DataFrame building
-|----|---- setup_check.py      ← dataset validation and species selection
-|----|----services/
-|----|----|---- workflow_service.py             ← coordinates data pipeline
-|----|----|---- eda_service.py                  ← chart generation methods
-|----|----|---- image_manipulation_functions.py ← resize, greyscale, invert
-|---- gitignore
-|---- README.md
-|---- requirements.txt
+**macro_project**/ <br>
+|---- data/ <br>
+|----|---- processed/          ← manipulated images saved here <br>
+|----|---- raw/ <br>
+|----|----|---- stream_macroinvertebrates/   ← dataset goes here <br>
+|---- outputs/ <br>
+|----|---- eda/                ← saved charts and graphs <br>
+|----|---- models/             ← model outputs (Stage 2) <br>
+|---- src/ <br>
+|----|---- config.py           ← all paths and settings <br>
+|----|---- main.py             ← console app entry point <br>
+|----|---- console_app.py      ← console menu logic <br>
+|----|---- dataset_index.py    ← image scanning and DataFrame building <br>
+|----|---- setup_check.py      ← dataset validation and species selection <br>
+|----|----services/ <br>
+|----|----|---- workflow_service.py             ← coordinates data pipeline <br>
+|----|----|---- eda_service.py                  ← chart generation methods <br>
+|----|----|---- image_manipulation_functions.py ← resize, greyscale, invert <br>
+|---- gitignore <br>
+|---- README.md <br>
+|---- requirements.txt <br>
 
 
 
