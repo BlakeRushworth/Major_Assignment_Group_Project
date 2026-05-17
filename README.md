@@ -52,8 +52,8 @@ a console menu or a Tkinter GUI dashboard.
      |----|----|---- ... 
 
 # How to Run
-**Stage 1: Console application (EDA + image manipulation)** <br>
-         |---- python -m src.main
+**Stage 1: Console application (EDA + image manipulation)** <br>       
+|----|----|---- python -m src.main
 - Validates the dataset, prompts species selection, then opens a menu-driven interface
 - From the menu you can view the dataset summary, generate charts, and apply image manipulations
 
