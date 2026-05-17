@@ -31,24 +31,24 @@ a console menu or a Tkinter GUI dashboard.
 - **Os**: File and Directory Management
 
 # Installation
-1. **Clone the repository**
-|---- git clone https://github.com/BlakeRushworth/Major_Assignment_Group_Project
+1. **Clone the repository** <br>
+   |---- git clone https://github.com/BlakeRushworth/Major_Assignment_Group_Project <br>
    |---- cd Major_Assignment_Group_Project/GroupAssignment/macro_project
-3. **Install dependencies**
+3. **Install dependencies** <br>
    |---- pip install -r requirements.txt
-4. **Download the dataset**
+4. **Download the dataset** 
    - Go to https://www.kaggle.com/datasets/kennethtm/stream-macroinvertebrates
    - Click Download (free Kaggle account required)
    - Unzip the downloaded file
-   - Move the extracted species folders into: \n
+   - Move the extracted species folders into: <br>
      |---- data/raw/stream_macroinvertebrates/
-   - The folder structure should look like: \n
-     |---- data/raw/stream_macroinvertebrates/ \n
-     |----|---- Asellus sp/ \n
-     |----|----|---- CPH-Asellus sp.-0-t.png \n
-     |----|----|---- CPH-Asellus sp.-1-t.png \n
-     |----|---- Baetidae sp/ \n
-     |----|----|---- CPH-Baetidae sp.-0-t.png \n
+   - The folder structure should look like: <br>
+     |---- data/raw/stream_macroinvertebrates/ <br>
+     |----|---- Asellus sp/ <br>
+     |----|----|---- CPH-Asellus sp.-0-t.png <br>
+     |----|----|---- CPH-Asellus sp.-1-t.png <br>
+     |----|---- Baetidae sp/ <br>
+     |----|----|---- CPH-Baetidae sp.-0-t.png <br>
      |----|----|---- ... 
 
 # How to Run
