@@ -36,7 +36,7 @@ class Image_Manipulation_Functions:
         self.save_path_dir = Path(AppConfig.PROCESSED_DATA_DIR)
         self.save_path_dir.mkdir(parents=True, exist_ok=True)
 
-    def resize_img(self, dataframe, new_size):
+    def resize_img(self, filepath, dataframe, new_size):
         """
         Resize one random image per species and save + display the result.
 
@@ -50,33 +50,35 @@ class Image_Manipulation_Functions:
                 [width, height] in pixels, note load_img takes (height, width)
                 so the values are swapped when passed in.
         """
-        count = 0
-        for species in dataframe["species"].unique():
+        img = load_img(filepath, target_size=(new_size[1], new_size[0])) # new size is a list with the first value height size and second width size
+        # convert image to a numpy array
+        img_array = img_to_array(img)
+        count = 0  
+        while True: #never overrides a file
             count += 1
-            species_df = dataframe[dataframe["species"] == species]
-            random_row = species_df.sample(1).iloc[0]
-            random_path = random_row["file_path"]
+            file_path = Path(f"data/processed/species_re-sized({count}).jpg")
+            #print(f"{file_path = }")
+            if file_path.is_file():
+                #print("File exists!")
+                continue
+            break
+        save_filename = f'species_re-sized({count}).jpg'
+        #print(f"{save_filename = }")
+        full_save_path = os.path.join(self.save_path_dir, save_filename)
+        save_img(full_save_path, img_array)
+        # load the image to confirm it was saved correctly
+        img = load_img(full_save_path)
+        # print(type(img))
+        # print(img.format)
+        # print(img.mode)
+        # print(img.size)
+        # # show the image using matplotlib
+        plt.imshow(img)
+        plt.axis('off') # Turn off axis labels
+        plt.show()
+        print(f"\nImage successfully re-sized ({file_path}) into: {self.save_path_dir}")
 
-            img = load_img(random_path, target_size=(new_size[1], new_size[0])) # new size is a list with the first value height size and second width size
-            # convert image to a numpy array
-            img_array = img_to_array(img)
-            save_filename = 'species_re-sized('+str(count)+').jpg'
-            #print(f"{save_filename = }")
-            full_save_path = os.path.join(self.save_path_dir, save_filename)
-            save_img(full_save_path, img_array)
-            # load the image to confirm it was saved correctly
-            img = load_img(full_save_path)
-            # print(type(img))
-            # print(img.format)
-            # print(img.mode)
-            # print(img.size)
-            # # show the image using matplotlib
-            plt.imshow(img)
-            plt.axis('off') # Turn off axis labels
-            plt.show()
-            print(f"\nImage successfully re-sized into: {self.save_path_dir}")
-
-    def greyscale_img(self, dataframe):
+    def greyscale_img(self, filepath):
         """
         Convert one random image per species to greyscale and save + display it.
 
@@ -87,27 +89,30 @@ class Image_Manipulation_Functions:
             dataframe : pd.DataFrame
                 The indexed dataset, must contain 'species' and 'file_path' columns.
         """
-        count = 0
-        for species in dataframe["species"].unique():
+        img = load_img(filepath, color_mode='grayscale')
+        # convert image to a numpy array
+        img_array = img_to_array(img)
+        count = 0  
+        while True: #never overrides a file
             count += 1
-            species_df = dataframe[dataframe["species"] == species]
-            random_row = species_df.sample(1).iloc[0]
-            random_path = random_row["file_path"]
-
-            img = load_img(random_path, color_mode='grayscale')
-            # convert image to a numpy array
-            img_array = img_to_array(img)
-            save_filename = 'species_grayscaled('+str(count)+').jpg'
-            full_save_path = os.path.join(self.save_path_dir, save_filename)
-            save_img(full_save_path, img_array)
-            # load the image to confirm it was saved correctly
-            img = load_img(full_save_path)
-            plt.imshow(img)
-            plt.axis('off') # Turn off axis labels
-            plt.show()
-            print(f"\nImage successfully grayscaled Species({species}) into: {self.save_path_dir}")
+            file_path = Path(f"data/processed/species_grayscaled({count}).jpg")
+            #print(f"{file_path = }")
+            if file_path.is_file():
+                #print("File exists!")
+                continue
+            break
+        save_filename = f'species_grayscaled({count}).jpg'
+        #print(f"{save_filename = }")
+        full_save_path = os.path.join(self.save_path_dir, save_filename)
+        save_img(full_save_path, img_array)
+        # load the image to confirm it was saved correctly
+        img = load_img(full_save_path)
+        plt.imshow(img)
+        plt.axis('off') # Turn off axis labels
+        plt.show()
+        print(f"\nImage successfully grayscaled ({file_path}) into: {self.save_path_dir}")
     
-    def invert_img(self, dataframe):
+    def invert_img(self, filepath):
         """
         Invert the pixel values of one random image per species and save + display it.
 
@@ -118,31 +123,28 @@ class Image_Manipulation_Functions:
             dataframe : pd.DataFrame
                 The indexed dataset, must contain 'species' and 'file_path' columns.
         """
-        count = 0
-        for species in dataframe["species"].unique():
+        img = load_img(filepath, color_mode='rgb')
+        # convert image to a numpy array
+        img_array = img_to_array(img)
+        count = 0  
+        while True: #never overrides a file
             count += 1
-            species_df = dataframe[dataframe["species"] == species]
-            random_row = species_df.sample(1).iloc[0]
-            random_path = random_row["file_path"]
+            file_path = Path(f"data/processed/species_inverted({count}).jpg")
+            #print(f"{file_path = }")
+            if file_path.is_file():
+                #print("File exists!")
+                continue
+            break
+        save_filename = f'species_inverted({count}).jpg'
+        #print(f"{save_filename = }")
+        full_save_path = os.path.join(self.save_path_dir, save_filename)
 
-            img = load_img(random_path, color_mode='rgb')
-            # convert image to a numpy array
-            img_array = img_to_array(img)
-            save_filename = 'species_inverted('+str(count)+').jpg'
-            #print(f"{save_filename = }")
-            full_save_path = os.path.join(self.save_path_dir, save_filename)
-
-            inverted_img_array = 255 - img_array
-            save_img(full_save_path, inverted_img_array)
-            # load the image to confirm it was saved correctly
-            img = load_img(full_save_path)
-            # print(type(img))
-            # print(img.format)
-            # print(img.mode)
-            # print(img.size)
-            # # show the image using matplotlib
-            plt.imshow(img)
-            plt.axis('off') # Turn off axis labels
-            plt.show()
-            print(f"\nImage successfully inverted Species({species}) into: {self.save_path_dir}")
+        inverted_img_array = 255 - img_array
+        save_img(full_save_path, inverted_img_array)
+        # load the image to confirm it was saved correctly
+        img = load_img(full_save_path)
+        plt.imshow(img)
+        plt.axis('off') # Turn off axis labels
+        plt.show()
+        print(f"\nImage successfully inverted ({filepath}) into: {self.save_path_dir}")
     

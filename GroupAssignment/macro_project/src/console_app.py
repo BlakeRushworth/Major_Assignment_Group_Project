@@ -174,14 +174,21 @@ class ConsoleApp:
                 # Collect width and height before creating the manipulator
                 resize_value: list = ConsoleApp.image_manipulation_resize_input(self)
                 if resize_value is not None:
-                    image_manipulation = Image_Manipulation_Functions()
-                    image_manipulation.resize_img(self.df, resize_value)
+
+                    file_path = self.image_manipulation_choose_image()
+                    if file_path is not None:
+                        image_manipulation = Image_Manipulation_Functions()
+                        image_manipulation.resize_img(filepath= file_path, new_size = resize_value)
             elif user_input == "2":
-                image_manipulation = Image_Manipulation_Functions()
-                image_manipulation.greyscale_img(self.df)
+                file_path = self.image_manipulation_choose_image()
+                if file_path is not None:
+                    image_manipulation = Image_Manipulation_Functions()
+                    image_manipulation.greyscale_img(filepath= file_path)
             elif user_input == "3":
-                image_manipulation = Image_Manipulation_Functions()
-                image_manipulation.invert_img(self.df)
+                file_path = self.image_manipulation_choose_image()
+                if file_path is not None:
+                    image_manipulation = Image_Manipulation_Functions()
+                    image_manipulation.invert_img(filepath= file_path)
             elif user_input == "4":
                 print("going back")
                 break
@@ -225,6 +232,21 @@ class ConsoleApp:
             self.print_invalid_inputsize()
             return None
         return [int(resize_x_input), int(resize_y_input)]
+
+    def image_manipulation_choose_image(self):
+        filepath_input = input("[Enter file path of Image]: ")
+        if self.is_image(filepath_input):
+            return filepath_input
+        else:
+            self.print_invalid_filepath()
+
+    def is_image(self, file_path):
+        try:
+            with Image.open(file_path) as img:
+                img.verify()  # Verifies the file is actually an image
+            return True
+        except (IOError, SyntaxError):
+            return False
 
     # Printing Menus
     def print_invalid_inputsize(self):
