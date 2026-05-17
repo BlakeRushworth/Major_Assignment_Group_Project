@@ -36,7 +36,7 @@ class Image_Manipulation_Functions:
         self.save_path_dir = Path(AppConfig.PROCESSED_DATA_DIR)
         self.save_path_dir.mkdir(parents=True, exist_ok=True)
 
-    def resize_img(self, filepath, dataframe, new_size):
+    def resize_img(self, filepath, new_size):
         """
         Resize one random image per species and save + display the result.
 
@@ -76,7 +76,7 @@ class Image_Manipulation_Functions:
         plt.imshow(img)
         plt.axis('off') # Turn off axis labels
         plt.show()
-        print(f"\nImage successfully re-sized ({file_path}) into: {self.save_path_dir}")
+        print(f"\nImage successfully re-sized ({filepath})\nnamed ({save_filename})\ninto: {self.save_path_dir}")
 
     def greyscale_img(self, filepath):
         """
@@ -110,7 +110,7 @@ class Image_Manipulation_Functions:
         plt.imshow(img)
         plt.axis('off') # Turn off axis labels
         plt.show()
-        print(f"\nImage successfully grayscaled ({file_path}) into: {self.save_path_dir}")
+        print(f"\nImage successfully grayscaled ({filepath}) \nnamed ({save_filename}) \ninto: {self.save_path_dir}")
     
     def invert_img(self, filepath):
         """
@@ -146,5 +146,5 @@ class Image_Manipulation_Functions:
         plt.imshow(img)
         plt.axis('off') # Turn off axis labels
         plt.show()
-        print(f"\nImage successfully inverted ({filepath}) into: {self.save_path_dir}")
+        print(f"\nImage successfully inverted ({filepath}) \nnamed ({save_filename}) \ninto: {self.save_path_dir}")
     
