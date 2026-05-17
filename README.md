@@ -40,16 +40,16 @@ a console menu or a Tkinter GUI dashboard.
    - Go to https://www.kaggle.com/datasets/kennethtm/stream-macroinvertebrates
    - Click Download (free Kaggle account required)
    - Unzip the downloaded file
-   - Move the extracted species folders into:
+   - Move the extracted species folders into: \n
      |---- data/raw/stream_macroinvertebrates/
-   - The folder structure should look like:
-     |---- data/raw/stream_macroinvertebrates/
-     |----|---- Asellus sp/
-     |----|----|---- CPH-Asellus sp.-0-t.png
-     |----|----|---- CPH-Asellus sp.-1-t.png
-     |----|---- Baetidae sp/
-     |----|----|---- CPH-Baetidae sp.-0-t.png
-     |----|----|---- ...
+   - The folder structure should look like: \n
+     |---- data/raw/stream_macroinvertebrates/ \n
+     |----|---- Asellus sp/ \n
+     |----|----|---- CPH-Asellus sp.-0-t.png \n
+     |----|----|---- CPH-Asellus sp.-1-t.png \n
+     |----|---- Baetidae sp/ \n
+     |----|----|---- CPH-Baetidae sp.-0-t.png \n
+     |----|----|---- ... 
 
 # How to Run
 **Stage 1: Console application (EDA + image manipulation)**
