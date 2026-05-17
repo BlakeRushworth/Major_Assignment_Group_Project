@@ -32,11 +32,11 @@ a console menu or a Tkinter GUI dashboard.
 
 # Installation
 1. **Clone the repository**
-   |---- git clone https://github.com/BlakeRushworth/Major_Assignment_Group_Project
+|---- git clone https://github.com/BlakeRushworth/Major_Assignment_Group_Project
    |---- cd Major_Assignment_Group_Project/GroupAssignment/macro_project
-2. **Install dependencies**
+3. **Install dependencies**
    |---- pip install -r requirements.txt
-3. **Download the dataset**
+4. **Download the dataset**
    - Go to https://www.kaggle.com/datasets/kennethtm/stream-macroinvertebrates
    - Click Download (free Kaggle account required)
    - Unzip the downloaded file
