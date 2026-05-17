@@ -12,7 +12,7 @@ the program exits gracefully rather than crashing later.
 
 import sys
 from src.config import AppConfig
-
+from tabulate import tabulate
 # Dataset validation
 
 def check_dataset_exists() -> bool:
@@ -57,36 +57,33 @@ def get_available_species() -> list[str]:
 
 def print_download_instructions() -> None:
     """Print friendly instructions for downloading the dataset."""
-    print("\n" + "=" * 55)
-    print("  Dataset not found")
-    print("=" * 55)
-    print(f"\nThe macroinvertebrate image dataset was not found at:{AppConfig.DATASET_DIR}\n")
-    print("To download the dataset:")
-    print("1. Go to https://www.kaggle.com/datasets/kennethtm/stream-macroinvertebrates")
-    print("2. Click 'Download' (you need a free Kaggle account)")
-    print("3. Unzip the downloaded file")
-    print(f"4. Move the extracted folders into:{AppConfig.DATASET_DIR}")
-    print("\nThe folder structure should look like:")
-    print("    data/raw/")
-    print("      Baetidae sp/")
-    print("        image1.jpg")
-    print("        image2.jpg")
-    print("      Chironomidae sp/")
-    print("        ...")
-    print("\n  Then re-run the program.")
-    print("=" * 55 + "\n")
+    rows = [
+            ["  Dataset not found"],
+            [f"\nThe macroinvertebrate image dataset was not found at:{AppConfig.DATASET_DIR}"],
+            ["To download the dataset:"],
+            ["1. Go to https://www.kaggle.com/datasets/kennethtm/stream-macroinvertebrates"],
+            ["2. Click 'Download' (you need a free Kaggle account)"],
+            ["3. Unzip the downloaded file"],
+            [f"4. Move the extracted folders into:{AppConfig.DATASET_DIR}"],
+            ["\nThe folder structure should look like:"],
+            ["    data/raw/"],
+            ["      Baetidae sp/"],
+            ["        image1.jpg"],
+            ["        image2.jpg"],
+            ["      Chironomidae sp/"],
+            ["        ..."],
+            ["\n  Then re-run the program."],
+            ]
+    print(tabulate(rows, headers=["#", "Instructions"], tablefmt="rounded_outline"))
 
 
 # Species selection
 
 def _print_species_list(available: list[str]) -> None:
     """Print the numbered species list used in the initial input screen."""
-    print("=" * 55)
     print("\nInitial Input\n")
-    print("=" * 55 + "\n")
-    for i, name in enumerate(available, 1):  # enumarate(first-instance: iterable data, second-instance: start from)
-        print(f"{i}. {name}")
-    print("\n"+"=" * 55)
+    rows = [[i, name] for i, name in enumerate(available, 1)]   # enumarate(first-instance: iterable data, second-instance: start from)
+    print(tabulate(rows, headers=["#", "Species"], tablefmt="rounded_outline"))
 
 
 def _parse_custom_input(raw: str, available: list[str]) -> list[str] | None:
@@ -124,6 +121,7 @@ def prompt_species_selection(available: list[str]) -> list[str]:
 
     while True:  # keeps the menu running until we get a confirmed selection or exit
         _print_species_list(available)
+
         print("\n  1.  Select all species")
         print("\n  2.  Select a custom set")
         print("\n  3.  Exit")

@@ -1,7 +1,14 @@
-#I used some code from the week 5 work for assignment 2 to select and show the images that the programs creates and saves.
-#I altered that code to get a random filename instead, a loop system for all the species and the altering of the images themselves.
+"""
+image_manipulation_functions.py
+--------------
+Runs after dataset picked:
+    - Resize
+    - Invert
+    - Grayscale
 
-
+I used some code from the week 5 work for assignment 2 to select and show the images that the programs creates and saves.
+I altered that code to get a random filename instead, a loop system for all the species and the altering of the images themselves.
+"""
 import matplotlib.pyplot as plt
 import os
 import cv2

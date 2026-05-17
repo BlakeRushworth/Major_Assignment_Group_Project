@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from PIL import Image
+from tabulate import tabulate
 from src.services.eda_service import EDAService
 from src.config import AppConfig
 from src.setup_check import run_setup
@@ -256,42 +257,39 @@ class ConsoleApp:
 
     def print_image_manipulation_menu(self):
         """Print the image manipulation sub-menu with three transform options."""
-        print("=" * 55)
-        print("\n Image Manipulation \n")
-        print("=" * 55)
-        print("\n  1: Resize image")
-        print("  2: Greyscale image")
-        print("  3: Invert image")
-        print("  4: Back \n")
-
+        rows = [
+                ["  1: Resize image"],
+                ["  2: Greyscale image"],
+                ["  3: Invert image"],
+                ["  4: Back \n"]
+                ]
+        print(tabulate(rows, headers=["Image Manipulation"], tablefmt="rounded_outline"))
     def print_graph_menu(self):
         """Print the chart generation sub-menu with four chart type options."""
-        print("=" * 55)
-        print("\n Graphing Data Charts\n")
-        print("=" * 55)
-        print("\n  1: Class Distribution")
-        print("  2: Image Size Distribution")
-        print("  3: Sample Image Grid")
-        print("  4: Brightness Distribution")
-        print("  5: Back \n")
+        rows = [
+                ["  1: Class Distribution"],
+                ["  2: Image Size Distribution"],
+                ["  3: Sample Image Grid"],
+                ["  4: Brightness Distribution"],
+                ["  5: Back"]
+                ]
+        print(tabulate(rows, headers=["Graphing Data Charts"], tablefmt="rounded_outline"))
 
     def print_analysis_mode_menu(self):
         """Print the analysis mode menu, the overall dataset vs per-species breakdown."""
-        print("=" * 55)
-        print("\n Analysis Mode \n")
-        print("=" * 55)
-
-        print("\n  1: Overall Selected Dataset")
-        print("  2: Per Species Chosen")
-        print("  3: Back\n")
-
+        rows = [
+                ["  1: Overall Selected Dataset"],
+                ["  2: Per Species Chosen"],
+                ["  3: Back"],
+                ]
+        print(tabulate(rows, headers=["Analysis Mode "], tablefmt="rounded_outline"))
     def print_main_menu(self):
         """Print the top-level application menu with all five navigation options."""
-        print("=" * 55)
-        print("\n Application \n")
-        print("=" * 55)
-        print("\n  1: View Dataset Summary")
-        print("  2: Chart Generation")
-        print("  3: Image Manipulation")
-        print("  4: Choose Another Dataset \n")
-        print("  5: Close application \n")
+        rows = [
+            ["  1: View Dataset Summary"],
+            ["  2: Chart Generation"],
+            ["  3: Image Manipulation"],
+            ["  4: Choose Another Dataset"],
+            ["  5: Close application \n"]
+                ]
+        print(tabulate(rows, headers=[ "Application"], tablefmt="rounded_outline"))

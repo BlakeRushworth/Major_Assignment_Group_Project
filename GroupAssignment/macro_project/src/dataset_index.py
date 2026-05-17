@@ -8,16 +8,16 @@ from src.config import AppConfig
 
 class DatasetIndexer:
     """
-        Scan the dataset folder and build a tabular image index.
+    Scan the dataset folder and build a tabular image index.
 
-        Walks the dataset directory recursively, reads each supported image
-        with OpenCV, and collects metadata into a flat list of dicts which is
-        then returned as a pandas DataFrame.
+    Walks the dataset directory recursively, reads each supported image
+    with OpenCV, and collects metadata into a flat list of dicts which is
+    then returned as a pandas DataFrame.
 
-        Attributes
-            data_dir       : Path — the folder that is actually scanned (resolved at init).
-            species_filter : list[str] | None — if provided, only images whose parent
-                             folder name matches an entry in this list are included.
+    Attributes
+        data_dir       : Path — the folder that is actually scanned (resolved at init).
+        species_filter : list[str] | None — if provided, only images whose parent
+                         folder name matches an entry in this list are included.
     """
 
     def __init__(self, selected, data_dir: Path = AppConfig.RAW_DATA_DIR) -> None:
