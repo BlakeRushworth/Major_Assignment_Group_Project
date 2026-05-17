@@ -5,7 +5,7 @@ import cv2
 import re
 import pandas as pd
 from src.config import AppConfig
-
+from tabulate import tabulate
 class DatasetIndexer:
     """
     Scan the dataset folder and build a tabular image index.
@@ -113,13 +113,15 @@ class DatasetIndexer:
         print("\nDATASET SUMMARY\n")
         print("="*55)
 
+        rows = []
         for _, row in summary.iterrows():
-            # Clean the label (remove numbers if they are like 'oak_01')
-            # This regex keeps only alphabetic characters
             clean_name = re.sub(r' .*', '', str(row['species']))
-            print(f"\nSpecies: {row['species']}")
-            print(f" - Name:            {clean_name}")
-            print(f" - Total Images:    {row['label']}")
-            print(f" - Avg Dimensions:  {row['width']:.1f}x{row['height']:.1f}")
-            print(f" - Base Filepath:   {Path(row['file_path']).parent} \n")
+            rows.append([
+                row['species'],
+                clean_name,
+                row['label'],
+                f"{row['width']:.1f}x{row['height']:.1f}",
+                Path(row['file_path']).parent,
+            ])
+        print(tabulate(rows, headers=["Species", "Name", "Images", "Avg Dimensions", "Base Filepath"], tablefmt="rounded_outline"))
         print("="*55)
