@@ -1,8 +1,8 @@
 # hashtagged dont exist for us since we didn't do stage 2
-#.venv/
+.venv/
 __pycache__/
 #*.pyc
-#.idea/
+.idea/
 #.DS_Store
 eda/
 models/
